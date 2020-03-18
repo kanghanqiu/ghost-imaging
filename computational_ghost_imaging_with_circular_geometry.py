@@ -22,7 +22,7 @@ def object_T(theta: float, a: float, b: float) -> float:
     The object transmission mask lying in interval: [a, b]
     on the unit circle.
     """
-    if a <= theta and theta <= b:
+    if a < theta and theta <= b:
         return 1
     else:
         return 0
@@ -39,12 +39,13 @@ n_pinholes = int(180./.5)
 T_mask_range = [ (225., 255.), (255., 285.), (285., 315.) ]
 
 bucket_n = [(n_pinholes-(n+1)) for n in range(n_pinholes)]
-correlated_signal = np.array([ 0. for n in range(n_pinholes) ], dtype=np.float)
 
-signal_hist=np.array([0 for n in range(n_pinholes)], dtype=np.int)
-reference_hist=np.array([0 for n in range(n_pinholes)], dtype=np.int)
 for i, T_mask_r in enumerate(T_mask_range):
     T = np.array([object_T(theta, *T_mask_r) for theta in np.arange(180.0, 360., .5)])
+    correlated_signal = np.array([ 0. for n in range(n_pinholes) ], dtype=np.float)
+    signal_hist=np.array([0 for n in range(n_pinholes)], dtype=np.int)
+    reference_hist=np.array([0 for n in range(n_pinholes)], dtype=np.int)
+
     for k in range(attempts):
         randomized_photon_intensities = I0 * np.random.uniform(0., 1., n_pinholes)
     
