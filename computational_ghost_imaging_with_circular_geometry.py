@@ -22,7 +22,7 @@ def object_T(theta: float, a: float, b: float) -> float:
     The object transmission mask lying in interval: [a, b]
     on the unit circle.
     """
-    if a < theta and theta <= b:
+    if a <= theta and theta <= b:
         return 1
     else:
         return 0
@@ -36,12 +36,12 @@ def pinhole_number(theta: float, pinhole_spacing: float=0.5) -> int:
 
 n_pinholes = int(180./.5)
 # One pinhole detector every 1/2 degrees
-T_mask_range = [ (225., 255.), (255., 285.), (285., 315.) ]
+object_T_mask_range = [ (225., 255.), (255., 285.), (285., 315.) ]
 
 bucket_n = [(n_pinholes-(n+1)) for n in range(n_pinholes)]
 
-for i, T_mask_r in enumerate(T_mask_range):
-    T = np.array([object_T(theta, *T_mask_r) for theta in np.arange(180.0, 360., .5)])
+for i, T_mask_range in enumerate(object_T_mask_range):
+    T = np.array([object_T(theta, *T_mask_range) for theta in np.arange(180.0, 360., .5)])
     correlated_signal = np.array([ 0. for n in range(n_pinholes) ], dtype=np.float)
     signal_hist=np.array([0 for n in range(n_pinholes)], dtype=np.int)
     reference_hist=np.array([0 for n in range(n_pinholes)], dtype=np.int)
@@ -76,7 +76,7 @@ for i, T_mask_r in enumerate(T_mask_range):
     plt.figure(i+1)
     plt.plot(correlated_signal/attempts, "ko")
     plt.ylabel("Ghost image [Average correlated intensities]")
-    plt.xlabel("Transmission mask 1's degrees range [%.2f, %.2f]"%T_mask_r)
+    plt.xlabel("Transmission mask 1's degrees range [%.2f, %.2f]"%T_mask_range)
 
     print("Correlated signal: %s"%correlated_signal)
     print("Signal or idler photon intensities: %s"%signal)
