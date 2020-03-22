@@ -25,15 +25,21 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 
-D : float = 5. * 10 ** -6
-# slit width
-N : int = 100
-# number of discrete points inside slit
+N : int = 1000
+# number of discrete points
+
+D : float = .2 * 10 ** -6
+# slit width [micron]
+Y : float = 1.0
+# Screen width [m]
+
 Dx : float = D / N
-Dy : float = 1./ N
-# Units: micron
+Dy : float = Y / N
+# deltas
+
 L : int = 100.
-# Units: meter
+# Distance to screen
+
 LAMBDA : float = 650. * 10 ** -9
 k : float = (2. * math.pi) / LAMBDA
 # Units: nm
@@ -41,13 +47,14 @@ k : float = (2. * math.pi) / LAMBDA
 THETA : float = LAMBDA/D
 
 def Intensity(L : float, k : float, x: object, y: object):
-    I = np.array([0. for i in range(x.size)])
+    nslits = x.size
+    I = np.array([0. for i in range(nslits)])
     for j, yj in np.ndenumerate(y):
         for yk in np.nditer(x):
             delta_kj = math.sqrt(L**2 + (yj-yk)**2)
             I[j] = I[j] + math.cos(k*delta_kj)**2
 
-    return I
+    return I/nslits
 
 def main():
     x = np.array([i for i in np.arange(-D/2, D/2, Dx)])
@@ -56,8 +63,8 @@ def main():
     # Screen points
 
     Iy = Intensity(L, k, x, y)
-    plt.title('Single-slit diffraction pattern')
-    plt.plot(y, Iy, '-x')
+    plt.title('Single-slit diffraction pattern; No. mini-slits: %d\nSlit widht: 0.2 [micron]'%(N,))
+    plt.plot(y[450:550], Iy[450:550], '-x')
     plt.xlabel("y [m]")
     plt.ylabel('Normalized\nIntensity')
 
