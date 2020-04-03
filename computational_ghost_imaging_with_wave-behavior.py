@@ -28,10 +28,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import numexpr as ne
 
-N : int = 100
+N : int = 2 ** 12
 # number of discrete points
 
-D : float = 1.4e-3
+D : float = 20e-6
 # slit width [micron]
 Y : float = 1.
 # Screen width [m]
@@ -40,7 +40,7 @@ dx : float = D / N
 dy : float = Y / N
 # deltas
 
-L : int = 100.
+L : int = 1.
 # Distance to screen
 
 LAMBDA : float = 650.e-9
@@ -70,17 +70,18 @@ def Intensity(L : float, k : float, x: object, y: object):
 
 #    return (Ey * np.conj(Ey))/np.sqrt(np.vdot(Ey, Ey))
 #    return ne.evaluate("real(abs(Ey))**2")
-    return np.abs(Ey) ** 2
+    return np.abs(Ey) ** 2 / np.sum(np.abs(Ey) ** 2)
 
 def main():
     x = np.array([i for i in np.arange(-D/2, D/2, dx)])
     # Mini-slit points
+
     y = np.array([i for i in np.arange(-Y/2, Y/2, dy)])
     # Screen points
 
     Iy = Intensity(L, k, x, y)
     plt.title('Single-slit diffraction pattern; no. mini-slits: %d\nSlit width: %.2e [m]; $\lambda$: %e [m]'%(N,D,LAMBDA))
-    plt.plot(y, Iy, '-x')
+    plt.plot(y[int(N/4):int(3*N/4)+1], Iy[int(N/4):int(3*N/4)+1], '-')
     plt.xlabel("y [m]")
     plt.ylabel('Normalized\nIntensity')
 
